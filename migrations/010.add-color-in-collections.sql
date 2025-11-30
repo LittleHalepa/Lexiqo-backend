@@ -1,0 +1,2 @@
+ALTER TABLE collections
+ADD COLUMN color VARCHAR(30) DEFAULT '[#641ae6]';

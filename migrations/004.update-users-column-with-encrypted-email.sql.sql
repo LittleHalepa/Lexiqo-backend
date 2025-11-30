@@ -1,0 +1,9 @@
+
+ALTER TABLE users 
+DROP COLUMN email;
+
+ALTER TABLE users 
+ADD COLUMN hashed_email TEXT UNIQUE NOT NULL,
+ADD COLUMN email_encrypted TEXT NOT NULL,
+ADD COLUMN email_iv TEXT NOT NULL,
+ADD COLUMN email_tag TEXT NOT NULL;

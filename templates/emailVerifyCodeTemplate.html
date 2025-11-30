@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Verification Code</title>
+  <style>
+    /* General reset */
+    body, table, td, a {
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4f0fa;
+      font-family: 'Helvetica', Arial, sans-serif;
+      color: #333333;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+      body { background-color: #1c1c1e; color: #f4f4f7; }
+      .container { background-color: #2c2c2e; }
+      .otp { background-color: #3a3a3c; color: #dcb3ff; }
+      .footer { color: #aaa; border-top: 1px solid #444; }
+      .header { color: #dcb3ff; }
+    }
+
+    /* Styles */
+    .container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .header {
+      background-color: #6a0dad;
+      color: #ffffff;
+      font-size: 22px;
+      font-weight: bold;
+      padding: 20px;
+      text-align: left;
+    }
+    .content {
+      padding: 30px;
+      text-align: center;
+    }
+    h2 {
+      color: #4b0082;
+      margin: 0 0 10px 0;
+    }
+    p {
+      color: #555555;
+      font-size: 16px;
+      margin: 10px 0;
+    }
+    .otp {
+      display: inline-block;
+      background-color: #e5d0ff;
+      color: #6a0dad;
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 6px;
+      padding: 15px 30px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    a {
+      color: #6a0dad;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .footer {
+      font-size: 12px;
+      color: #999999;
+      padding: 20px 30px;
+      border-top: 1px solid #e0e0e0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <table width="100%" cellspacing="0" cellpadding="0" border="0">
+    <tr>
+      <td align="center">
+        <table width="600" cellspacing="0" cellpadding="0" border="0" class="container">
+          <!-- Header -->
+          <tr>
+            <td class="header">
+              Lexiqo
+            </td>
+          </tr>
+          <!-- Content -->
+          <tr>
+            <td class="content">
+              <h2>Your Verification Code</h2>
+              <p>Use the code below to verify your email. It is valid for <strong>5 minutes</strong>.</p>
+              <div class="otp">{{OTP_CODE}}</div>
+              <p>If you did not request this verification, you can safely ignore this email.</p>
+              <p>Visit our <a href="https://lexiqo.app">website</a> for more info or contact support.</p>
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td class="footer">
+                <p>Thank you for using <strong>Lexiqo!</strong></p>
+                <p>© 2025 Lexiqo. All rights reserved.<br></p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
