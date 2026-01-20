@@ -40,7 +40,7 @@ export const createNewCollectionController = async (req: Request, res: Response)
         return res.status(400).json({error: true, message: 'Card count must be greater than zero'});
     }
 
-    const existingCollection = await db.query('SELECT * FROM collections WHERE name = $1', [name]);
+    const existingCollection = await db.query('SELECT * FROM collections WHERE name = $1 AND user_id = $2', [name, req.user.id]);
     if (existingCollection.rows.length !== 0) {
         return res.status(400).json({error: true, message: 'Collection with that name exists!'});
     }

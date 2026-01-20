@@ -66,6 +66,7 @@ export const verifyEmailCode = async (req: Request, res: Response) => {
         username: user.username,
         hashedEmail: user.hashed_email,
         public_id: user.public_id,
+        profile_picture: user.profile_picture
     };
 
     const { accessToken, refreshToken } = generateTokens(payload);

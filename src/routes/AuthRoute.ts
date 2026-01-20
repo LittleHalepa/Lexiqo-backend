@@ -15,12 +15,12 @@ import { githubCallback } from '../controllers/auth/LoginWithGithubCallback';
 const router = Router();
 
 
-router.post('/register', limiters.register, register);
+router.post('/register' , register);
 router.post('/refresh-token' ,refreshToken);
 router.post('/logout', limiters.logout ,logout);
-router.post('/login', limiters.login ,login);
+router.post('/login' ,login);
 router.post('/send-verification-code',sendMailVerifyCode);
-router.post('/verify-code', limiters.verifyCode ,verifyEmailCode);
+router.post('/verify-code' ,verifyEmailCode);
 router.post('/verify-recaptcha' ,verifyRecaptchaController);
 router.get('/login-with-google' ,loginWithGoogle);
 router.get('/login-with-google/callback' ,LoginWithGoogleCallback);
