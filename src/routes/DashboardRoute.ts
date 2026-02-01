@@ -12,12 +12,12 @@ import GetCollectionInfo from '../controllers/Dashboard/GetCollectionInformation
 
 const router = Router();
 
-router.post('/create-collection', authenticateToken ,createNewCollectionController);
-router.get('/get-collections', authenticateToken ,getCollectionsController);
-router.post('/bookmark-collection',authenticateToken, BookmarkCollectionController);
-router.post('/get-cards', authenticateToken, getCardsController);
-router.get('/get-recent-collections', authenticateToken, GetRecentCollections);
-router.post('/add-to-recent-collections', authenticateToken, AddToRecentCollections);
-router.post('/get-collection-info', authenticateToken, GetCollectionInfo);
+router.post('/create-collection', authenticateToken , limiters.createCollection , createNewCollectionController);
+router.get('/get-collections', authenticateToken , limiters.getCollections , getCollectionsController);
+router.post('/bookmark-collection',authenticateToken, limiters.bookmarkCollection ,BookmarkCollectionController);
+router.post('/get-cards', authenticateToken, limiters.getCards , getCardsController);
+router.get('/get-recent-collections', authenticateToken, limiters.getRecentCollections ,GetRecentCollections);
+router.post('/add-to-recent-collections', authenticateToken, limiters.addToRecentCollections ,AddToRecentCollections);
+router.post('/get-collection-info',authenticateToken, limiters.getCollectionsInfo, GetCollectionInfo);
 
 export default router;

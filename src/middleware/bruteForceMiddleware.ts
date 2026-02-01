@@ -90,7 +90,7 @@ export async function resetAccountLimit(email: string) {
 export const limiters = {
   login: buildLimiter({
     scopes: ["ip", "account"],
-    points: 5,
+    points: 60,
     durationSec: 60,
     blockDurationSec: 15 * 60,
   }),
@@ -98,8 +98,8 @@ export const limiters = {
   register: buildLimiter({
     scopes: ["ip"],
     points: 10,
-    durationSec: 60 * 60,
-    blockDurationSec: 24 * 60 * 60,
+    durationSec: 60,
+    blockDurationSec: 30 * 60,
   }),
 
   refresh: buildLimiter({
@@ -113,7 +113,7 @@ export const limiters = {
     scopes: ["ip", "token"],
     points: 10,
     durationSec: 60,
-    blockDurationSec: 5 * 60,
+    blockDurationSec: 15 * 60,
   }),
 
   sendVerifyEmail: buildLimiter({
@@ -160,14 +160,14 @@ export const limiters = {
 
   verifyRecaptcha: buildLimiter({
     scopes: ["ip", "account"],
-    points: 7,
+    points: 15,
     durationSec: 60 * 5,
     blockDurationSec: 30 * 60,
   }),
 
   getCollections: buildLimiter({
     scopes: ["ip", "account"],
-    points: 30,
+    points: 60,
     durationSec: 60,
     blockDurationSec: 30 * 60,
   }),
@@ -179,4 +179,45 @@ export const limiters = {
     blockDurationSec: 30 * 60, 
   }),
 
+  bookmarkCollection: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 60,
+    durationSec: 60,
+    blockDurationSec: 30 * 60,
+  }),
+
+  getCards: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 60,
+    durationSec: 60,
+    blockDurationSec: 15 * 60,
+  }),
+
+  getRecentCollections: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 60,
+    durationSec: 60,
+    blockDurationSec: 15 * 60,
+  }),
+
+  addToRecentCollections: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 60,
+    durationSec: 60,
+    blockDurationSec: 15 * 60,
+  }),
+
+  getCollectionsInfo: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 60,
+    durationSec: 60,
+    blockDurationSec: 30 * 60,
+  }),
+
+  getUserInfo: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 60,
+    durationSec: 60,
+    blockDurationSec: 30 * 60,
+  }),
 };
