@@ -34,7 +34,6 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/express-brute": "^1.0.6",
-    "@types/express-brute-redis": "^0.0.7",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^24.1.0",
     "@types/nodemailer": "^7.0.1",
