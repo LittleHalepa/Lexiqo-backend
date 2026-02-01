@@ -14,8 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const allowedOrigins = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173'
+   process.env.FRONTEND_URL || 'http://localhost:5173',
 ];
 
 app.use(helmet({
