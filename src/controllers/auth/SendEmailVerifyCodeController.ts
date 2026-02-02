@@ -9,6 +9,20 @@ import { hashEmail } from "../../utils/encryptionUtills";
 import { isValidEmail } from "../../utils/validators";
 import { hashCode } from "../../utils/encryptionUtills";
 
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true, // true для порту 465
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_APP_PASSWORD
+    },
+    // Додай цей блок, щоб уникнути проблем з сертифікатами на деяких серверах
+    tls: {
+        rejectUnauthorized: false
+    }
+});
+
 export const sendMailVerifyCode = async (req: Request, res: Response) => {
     const { email } = req.body;
     const code = generateCode();
@@ -41,21 +55,7 @@ export const sendMailVerifyCode = async (req: Request, res: Response) => {
 
     await redis.set(`verifyEmail:${hashedEmail}`, hashedCode, 'EX', 300);
 
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 465,
-        secure: true, // true для порту 465
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_APP_PASSWORD
-        },
-        // Додай цей блок, щоб уникнути проблем з сертифікатами на деяких серверах
-        tls: {
-            rejectUnauthorized: false
-        }
-    });
-
-    const templatePath = path.join(__dirname, '../../../templates/emailVerifyCodeTemplate.html');
+    const templatePath = path.join(__dirname, '../../templates/emailVerifyCodeTemplate.html');
     const emailTemplate = fs.readFileSync(templatePath, 'utf-8');
     const htmlContent = emailTemplate.replace('{{OTP_CODE}}', code);
 
