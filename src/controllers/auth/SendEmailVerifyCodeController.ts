@@ -12,12 +12,14 @@ import { hashCode } from "../../utils/encryptionUtills";
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
-    secure: true, // true для порту 465
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD
     },
-    // Додай цей блок, щоб уникнути проблем з сертифікатами на деяких серверах
+    connectionTimeout: 10000, // 10 секунд і вилітаємо
+    greetingTimeout: 5000,
+    socketTimeout: 15000,
     tls: {
         rejectUnauthorized: false
     }
@@ -55,11 +57,12 @@ export const sendMailVerifyCode = async (req: Request, res: Response) => {
 
     await redis.set(`verifyEmail:${hashedEmail}`, hashedCode, 'EX', 300);
 
-    const templatePath = path.join(__dirname, '../../templates/emailVerifyCodeTemplate.html');
+    const templatePath = path.join(process.cwd(), 'src/templates/emailVerifyCodeTemplate.html');
     const emailTemplate = fs.readFileSync(templatePath, 'utf-8');
     const htmlContent = emailTemplate.replace('{{OTP_CODE}}', code);
 
     try {
+        console.log("Starting to send email to:", email);
         await transporter.sendMail({
             from: `"Lexiqo" <${process.env.EMAIL_USER}>`,
             to: email,
