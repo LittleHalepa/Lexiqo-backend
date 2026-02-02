@@ -11,8 +11,8 @@ import { hashCode } from "../../utils/encryptionUtills";
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 465,
-    secure: true,
+    port: 587,
+    secure: false,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD
@@ -57,8 +57,18 @@ export const sendMailVerifyCode = async (req: Request, res: Response) => {
 
     await redis.set(`verifyEmail:${hashedEmail}`, hashedCode, 'EX', 300);
 
+    console.log("reading template");
+
     const templatePath = path.join(process.cwd(), 'src/templates/emailVerifyCodeTemplate.html');
-    const emailTemplate = fs.readFileSync(templatePath, 'utf-8');
+
+    let emailTemplate;
+    try {
+        emailTemplate = fs.readFileSync(templatePath, 'utf-8');
+    } catch (err) {
+        console.error("TEMPLATE NOT FOUND:", templatePath);
+        // Якщо файлу немає, створимо хоча б базовий текст, щоб не падати
+        emailTemplate = "Your code is: {{OTP_CODE}}";
+    }
     const htmlContent = emailTemplate.replace('{{OTP_CODE}}', code);
 
     try {
