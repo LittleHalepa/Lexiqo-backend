@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import redis from "../../Redis";
 
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_AUTH_CLIENT_ID;
-const REDIRECT_URI = "http://localhost:3000/api/auth/login-with-google/callback";
+const REDIRECT_URI = `${process.env.BACKEND_URL}/api/auth/login-with-google/callback`;
 
 export const loginWithGoogle = async (req: Request, res: Response) => {
     console.log('Redirecting to Google OAuth 2.0 authorization endpoint');

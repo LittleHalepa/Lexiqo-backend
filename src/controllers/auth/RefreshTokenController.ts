@@ -27,7 +27,7 @@ export const refreshToken = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken
 
     if (!refreshToken) {
-        return res.status(401).json({ message: 'Refresh token not found!' });
+        return res.status(401).json({ error: true, message: 'Refresh token not found!' });
     }
 
     try {
@@ -36,7 +36,7 @@ export const refreshToken = async (req: Request, res: Response) => {
 
         if (!tokenData) {
             res.clearCookie('refreshToken');
-            return res.status(403).json({ message: 'Invalid or expired refresh token!' });
+            return res.status(403).json({ error: true, message: 'Invalid or expired refresh token!' });
         }
 
         const tokenPayload: TokenPayload = {
@@ -56,7 +56,8 @@ export const refreshToken = async (req: Request, res: Response) => {
         res.cookie('accessToken', accessToken, ACCESS_COOKIE_OPTIONS);
 
         return res.status(200).json({
-            message: 'Tokens refreshed successfully',
+            error: false,
+            message: 'Tokens refreshed successfully',  
         });
 
     }catch (error: unknown) {
@@ -64,6 +65,6 @@ export const refreshToken = async (req: Request, res: Response) => {
         
         res.clearCookie('refreshToken');
         res.clearCookie('accessToken');
-        return res.status(500).json({ message: 'Internal server error' });
+        return res.status(500).json({ error: true, message: 'Internal server error' });
     }
 }   

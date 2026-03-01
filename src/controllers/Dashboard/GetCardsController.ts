@@ -1,37 +1,70 @@
-import { Request, Response } from 'express';
-import db from '../../db';
+import { Request, Response } from "express";
+import db from "../../db";
 
 const getCardsController = async (req: Request, res: Response) => {
+  const { collectionUuid } = req.body;
 
-    if (!req.user) {
-        return res.status(401).json({error: true, message: 'Unauthorized'});
+  if (!collectionUuid) {
+    return res.status(400).json({
+      error: true,
+      message: "Collection UUID is required",
+    });
+  }
+
+  const user = req.user;
+
+  try {
+    // 1️⃣ Отримуємо колекцію по public_uuid
+    const collectionResult = await db.query(
+      `
+      SELECT c.id, c.user_id, c.is_public
+      FROM collections c
+      WHERE c.uuid = $1
+      `,
+      [collectionUuid]
+    );
+
+    const collection = collectionResult.rows[0];
+
+    if (!collection) {
+      return res.status(404).json({
+        error: true,
+        message: "Collection not found",
+      });
     }
 
-    const collectionId = req.body.id;
+    // 2️⃣ Перевірка доступу
+    const isOwner = user && collection.user_id === user.id;
 
-    if (!collectionId) {
-        return res.status(400).json({error: true, message: 'Collection ID is required'});
+    if (!isOwner && !collection.is_public) {
+      return res.status(403).json({
+        error: true,
+        message: "You do not have permission to access this collection",
+      });
     }
 
-    try {
-        const collection = await db.query('SELECT * FROM collections WHERE id = $1 AND user_id = $2', [collectionId, req.user.id]);
+    // 3️⃣ Отримуємо картки
+    const cardsResult = await db.query(
+      `
+      SELECT *
+      FROM cards
+      WHERE collection_id = $1
+      `,
+      [collection.id]
+    );
 
-        if (collection.rows.length === 0) {
-            return res.status(404).json({error: true, message: 'Collection not found'});
-        }
+    return res.status(200).json({
+      error: false,
+      cards: cardsResult.rows,
+    });
 
-        const cards = await db.query('SELECT * FROM cards WHERE collection_id = $1', [collectionId]);
-
-        if (cards.rows.length === 0) {
-            return res.status(404).json({error: true, message: 'Cards not found'});
-        }
-        
-        return res.status(200).json({error: false, cards: cards.rows});
-
-    } catch (error) {
-        console.error('Error fetching cards:', error);
-        return res.status(500).json({error: true, message: 'Internal server error'});
-    }
-}
+  } catch (error) {
+    console.error("Error fetching cards:", error);
+    return res.status(500).json({
+      error: true,
+      message: "Internal server error",
+    });
+  }
+};
 
 export default getCardsController;

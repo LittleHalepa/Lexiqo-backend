@@ -31,8 +31,10 @@ function buildLimiter(policy: Policy) {
       case "ip":
         return req.ip || (req.headers["x-forwarded-for"] as string) || req.socket.remoteAddress || null;
       case "account": {
+        // Використовуємо userId (якщо залогінений) або email
         const userId = (req as any).user?.id;
-        return userId ? String(userId) : null;
+        const email = (req as any).user?.email || (req.body?.email);
+        return userId ? String(userId) : (email ? email.toLowerCase().trim() : null);
       }
       case "token": {
         const tokenHash = (req as any).refreshTokenHash || null;
@@ -63,7 +65,7 @@ function buildLimiter(policy: Policy) {
         res.setHeader("Retry-After", String(sec));
         return res.status(429).json({
           error: true,
-          message: 'Please wait before trying again!'
+          message: `Too many requests. Please wait ${sec} seconds before trying again.`
         });
       }
 
@@ -77,147 +79,149 @@ function buildLimiter(policy: Policy) {
       return next();
     } catch (e) {
       console.error("Bruteforce middleware error:", e);
-      return next();
+      return next(); // У разі помилки пропускаємо запит
     }
   };
 }
 
-export async function resetAccountLimit(email: string) {
-  const key = `account:${email.toLowerCase().trim()}`;
+export async function resetAccountLimit(identifier: string) {
+  // Підтримуємо і email і userId
+  const key = `account:${identifier.toLowerCase().trim()}`;
   await redis.del(`bf:${key}`);
 }
 
 export const limiters = {
   login: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
-    durationSec: 60,
-    blockDurationSec: 15 * 60,
+    points: 10,              // 10 спроб
+    durationSec: 60 * 5,     // за 5 хвилин
+    blockDurationSec: 60,    // блок на 1 хвилину
   }),
 
   register: buildLimiter({
     scopes: ["ip"],
-    points: 10,
-    durationSec: 60,
-    blockDurationSec: 30 * 60,
+    points: 5,               // 5 реєстрацій
+    durationSec: 60 * 60,    // за годину
+    blockDurationSec: 60 * 5, // блок на 5 хвилин
   }),
 
   refresh: buildLimiter({
     scopes: ["ip", "token"],
-    points: 20,
-    durationSec: 60,
-    blockDurationSec: 10 * 60,
+    points: 30,              
+    durationSec: 60,         
+    blockDurationSec: 60,    
   }),
 
   logout: buildLimiter({
     scopes: ["ip", "token"],
-    points: 10,
+    points: 20,
     durationSec: 60,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   sendVerifyEmail: buildLimiter({
     scopes: ["ip", "account"],
-    points: 7,
-    durationSec: 60 * 60,
-    blockDurationSec: 60 * 60,
+    points: 5,               // 5 листів
+    durationSec: 60 * 60,    // за годину
+    blockDurationSec: 60 * 30, // блок на 30 хвилин
   }),
 
   verifyCode: buildLimiter({
     scopes: ["ip", "account"],
     points: 10,
     durationSec: 60 * 60,
-    blockDurationSec: 60 * 60,
+    blockDurationSec: 60 * 30,
   }),
 
   loginWithGoogle: buildLimiter({
-    scopes: ["ip", "account"],
-    points: 10,
+    scopes: ["ip"],
+    points: 20,
     durationSec: 60 * 5,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   loginWithGoogleCallback: buildLimiter({
-    scopes: ["ip", "account"],
-    points: 10,
+    scopes: ["ip"],
+    points: 20,
     durationSec: 60 * 5,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   loginWithGithub: buildLimiter({
-    scopes: ["ip", "account"],
-    points: 10,
+    scopes: ["ip"],
+    points: 20,
     durationSec: 60 * 5,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   loginWithGithubCallback: buildLimiter({
-    scopes: ["ip", "account"],
-    points: 10,
+    scopes: ["ip"],
+    points: 20,
     durationSec: 60 * 5,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   verifyRecaptcha: buildLimiter({
     scopes: ["ip", "account"],
-    points: 15,
+    points: 30,
     durationSec: 60 * 5,
-    blockDurationSec: 30 * 60,
+    blockDurationSec: 60 * 5,
   }),
 
+  // Read-only ендпоінти — більш м'які ліміти
   getCollections: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
-    durationSec: 60,
-    blockDurationSec: 30 * 60,
+    points: 100,             // 100 запитів
+    durationSec: 60,         // за хвилину
+    blockDurationSec: 60,    // блок на 1 хвилину
   }),
 
   createCollection: buildLimiter({
     scopes: ["ip", "account"],
-    points: 20,             
-    durationSec: 60 * 10,   
-    blockDurationSec: 30 * 60, 
+    points: 30,              // 30 колекцій
+    durationSec: 60 * 10,    // за 10 хвилин
+    blockDurationSec: 60 * 5, // блок на 5 хвилин
   }),
 
   bookmarkCollection: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
+    points: 100,
     durationSec: 60,
-    blockDurationSec: 30 * 60,
+    blockDurationSec: 60,
   }),
 
   getCards: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
+    points: 100,
     durationSec: 60,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   getRecentCollections: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
+    points: 100,
     durationSec: 60,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   addToRecentCollections: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
+    points: 100,
     durationSec: 60,
-    blockDurationSec: 15 * 60,
+    blockDurationSec: 60,
   }),
 
   getCollectionsInfo: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
+    points: 100,
     durationSec: 60,
-    blockDurationSec: 30 * 60,
+    blockDurationSec: 60,
   }),
 
   getUserInfo: buildLimiter({
     scopes: ["ip", "account"],
-    points: 60,
+    points: 100,
     durationSec: 60,
-    blockDurationSec: 30 * 60,
+    blockDurationSec: 60,
   }),
 };

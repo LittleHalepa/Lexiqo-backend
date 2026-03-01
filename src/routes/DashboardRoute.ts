@@ -9,6 +9,7 @@ import getCardsController from '../controllers/Dashboard/GetCardsController';
 import { GetRecentCollections } from '../controllers/Dashboard/GetRecentCollections';
 import { AddToRecentCollections } from '../controllers/Dashboard/AddToRecentColllections';
 import GetCollectionInfo from '../controllers/Dashboard/GetCollectionInformationController';
+import { changeCollectionAccessController } from '../controllers/Dashboard/ChangeCollectionAccessController';
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.post('/get-cards', authenticateToken, limiters.getCards , getCardsControl
 router.get('/get-recent-collections', authenticateToken, limiters.getRecentCollections ,GetRecentCollections);
 router.post('/add-to-recent-collections', authenticateToken, limiters.addToRecentCollections ,AddToRecentCollections);
 router.post('/get-collection-info',authenticateToken, limiters.getCollectionsInfo, GetCollectionInfo);
+router.post('/change-collection-access', authenticateToken, changeCollectionAccessController);
 
 export default router;

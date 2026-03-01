@@ -1,0 +1,3 @@
+ALTER TABLE collections
+ADD COLUMN is_public BOOLEAN DEFAULT FALSE,
+ADD COLUMN uuid UUID UNIQUE NOT NULL DEFAULT gen_random_uuid();

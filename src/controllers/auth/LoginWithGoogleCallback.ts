@@ -6,7 +6,7 @@ import { isImage, isTrustedGoogleImage } from "../../utils/validators";
 
 const GOOGLE_CLIENT_SECRET = String(process.env.GOOGLE_AUTH_CLIENT_SECRET);
 const GOOGLE_CLIENT_ID = String(process.env.GOOGLE_AUTH_CLIENT_ID);
-const REDIRECT_URI = "http://localhost:3000/api/auth/login-with-google/callback";
+const REDIRECT_URI = `${process.env.BACKEND_URL}/api/auth/login-with-google/callback`; //! На vps змінити не забудь!
 
 const COOKIE_OPTIONS = {
     httpOnly: true,

@@ -11,8 +11,8 @@ import { hashCode } from "../../utils/encryptionUtills";
 
 const transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_APP_PASSWORD
@@ -66,7 +66,6 @@ export const sendMailVerifyCode = async (req: Request, res: Response) => {
         emailTemplate = fs.readFileSync(templatePath, 'utf-8');
     } catch (err) {
         console.error("TEMPLATE NOT FOUND:", templatePath);
-        // Якщо файлу немає, створимо хоча б базовий текст, щоб не падати
         emailTemplate = "Your code is: {{OTP_CODE}}";
     }
     const htmlContent = emailTemplate.replace('{{OTP_CODE}}', code);

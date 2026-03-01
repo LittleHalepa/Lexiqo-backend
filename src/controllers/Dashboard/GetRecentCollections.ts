@@ -8,9 +8,13 @@ export const GetRecentCollections = async (req: Request, res: Response) => {
 
     try {
         const recentCollections = await db.query(`
-            SELECT * FROM recent_collections
-            WHERE user_id = $1
-            ORDER BY last_opened DESC
+            SELECT 
+                rc.*,
+                c.uuid
+            FROM recent_collections rc
+            JOIN collections c ON rc.collection_id = c.id
+            WHERE rc.user_id = $1
+            ORDER BY rc.last_opened DESC
             LIMIT 5
         `, [req.user.id]);
 

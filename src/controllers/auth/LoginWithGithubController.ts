@@ -4,13 +4,13 @@ import redis from "../../Redis";
 
 
 const GITHUB_CLIENT_ID = process.env.GITHUB_AUTH_CLIENT_ID;
-const REDIRECT_URI = "http://localhost:3000/api/auth/login-with-github/callback";
+const REDIRECT_URI = `${process.env.BACKEND_URL}/api/auth/login-with-github/callback`;
 
 export const loginWithGithub = async (req: Request, res: Response) => {
 
-    console.log('Redirecting to Google OAuth 2.0 authorization endpoint');
+    console.log('Redirecting to GitHub OAuth 2.0 authorization endpoint');
     if (!GITHUB_CLIENT_ID) {
-        return res.status(500).json({ error: true, message: 'Google Client ID is not configured' });
+        return res.status(500).json({ error: true, message: 'GitHub Client ID is not configured' });
     }
 
     const recaptchaToken = req.cookies.recaptchaToken;

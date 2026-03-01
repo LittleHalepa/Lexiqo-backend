@@ -13,6 +13,8 @@ import helmet from 'helmet';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', true);
+
 const allowedOrigins = [
    process.env.FRONTEND_URL || 'http://localhost:5173',
 ];
