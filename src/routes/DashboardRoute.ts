@@ -10,6 +10,7 @@ import { GetRecentCollections } from '../controllers/Dashboard/GetRecentCollecti
 import { AddToRecentCollections } from '../controllers/Dashboard/AddToRecentColllections';
 import GetCollectionInfo from '../controllers/Dashboard/GetCollectionInformationController';
 import { changeCollectionAccessController } from '../controllers/Dashboard/ChangeCollectionAccessController';
+import getTestDataController from '../controllers/Dashboard/GetTestDataController';
 
 const router = Router();
 
@@ -21,5 +22,6 @@ router.get('/get-recent-collections', authenticateToken, limiters.getRecentColle
 router.post('/add-to-recent-collections', authenticateToken, limiters.addToRecentCollections ,AddToRecentCollections);
 router.post('/get-collection-info',authenticateToken, limiters.getCollectionsInfo, GetCollectionInfo);
 router.post('/change-collection-access', authenticateToken, changeCollectionAccessController);
+router.get('/get-test-data', authenticateToken, limiters.getTestData, getTestDataController);
 
 export default router;

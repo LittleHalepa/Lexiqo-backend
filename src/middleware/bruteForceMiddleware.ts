@@ -224,4 +224,12 @@ export const limiters = {
     durationSec: 60,
     blockDurationSec: 60,
   }),
+
+  getTestData: buildLimiter({
+    scopes: ["ip", "account"],
+    points: 100,
+    durationSec: 60,
+    blockDurationSec: 60,
+  }),
+  
 };
